@@ -364,7 +364,7 @@ for nombre, serie in series_analizar.items():
 
             plt.suptitle(f'Descomposición: {nombre}', fontsize=14)
             plt.tight_layout()
-            plt.savefig("imagenes/DescomposicionDeSeries.png")
+            plt.savefig(f"imagenes/DescomposicionDeSeries{nombre}.png")
 
             # Análisis de componentes
             print(f"    Tendencia: {'Creciente' if decomposition.trend.dropna().iloc[-1] > decomposition.trend.dropna().iloc[0] else 'Decreciente'}")
@@ -427,7 +427,7 @@ def analizar_autocorrelacion(serie, nombre, lags=20):
     axes[1].set_title(f'Función de Autocorrelación Parcial (PACF) - {nombre}')
 
     plt.tight_layout()
-    plt.savefig("imagenes/AutocorrelacionPACF.png")
+    plt.savefig(f"imagenes/AutocorrelacionPACF {nombre}.png")
 
     if nobs > 1:
         acf_values = pd.Series(serie.dropna()).autocorr(lag=1)
@@ -483,7 +483,7 @@ def diferencias_serie(serie, nombre, max_diff=3):
         plt.grid(True, alpha=0.3)
 
         plt.tight_layout()
-        plt.savefig("imagenes/SerieFinal.png")
+        plt.savefig(f"imagenes/SerieFinal{nombre}.png")
 
     return serie, d
 
@@ -938,7 +938,7 @@ for nombre_serie, serie in series_analizar.items():
     plt.legend()
     plt.grid(True, alpha=0.3)
     plt.tight_layout()
-    plt.savefig("imagenes/PrediccionesVsRealidad.png")
+    plt.savefig(f"imagenes/PrediccionesVsRealidad{nombre_serie}.png")
 
 from pmdarima.arima import auto_arima
 import pandas as pd
@@ -956,7 +956,6 @@ for nombre_serie, serie in series_analizar.items():
     print(f"{'='*60}")
 
     if nombre_serie == 'Precios Gasolina Regular':
-        print("🔹 Saltando predicción últimos 3 años (serie <36 meses)")
         train = serie  # 7 puntos
         n_pasados = len(train)
         n_restantes = 12 - n_pasados
@@ -968,7 +967,8 @@ for nombre_serie, serie in series_analizar.items():
         try:
             modelo = auto_arima(
                 train,
-                seasonal=False,   
+                seasonal=True,
+                m=12,
                 suppress_warnings=True,
                 stepwise=True
             )
@@ -1051,7 +1051,7 @@ for nombre_serie, serie in series_analizar.items():
         plt.grid(True, alpha=0.3)
         plt.xticks(rotation=45)
         plt.tight_layout()
-        plt.savefig("imagenes/Prediccion2025.png")
+        plt.savefig(f"imagenes/Prediccion2025{nombre_serie}.png")
 
     except Exception as e:
         print(f"Error generando predicciones para {nombre_serie}: {e}")
