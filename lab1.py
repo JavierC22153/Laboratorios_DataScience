@@ -550,19 +550,35 @@ from sklearn.neural_network import MLPRegressor
 from sklearn.preprocessing import StandardScaler
 
 
-def crear_conjuntos_entrenamiento_prueba(serie, test_years=3):
+def crear_conjuntos_entrenamiento_prueba(serie, test_years=3, min_train_obs=24):
     """
-    Divide la serie en conjunto de entrenamiento y prueba
+    Divide la serie en train/test:
+      - test_years: años aproximados para test
+      - min_train_obs: mínimo de meses para train
     """
-    # Calcular fecha de corte (últimos 3 años para prueba)
-    fecha_fin = serie.index.max()
-    fecha_corte = fecha_fin - pd.DateOffset(years=test_years)
+    # asegúrate de que la serie tenga freq mensual
+    if serie.index.freq is None:
+        serie = serie.asfreq('MS')
+    
+    # número de meses de test deseados
+    meses_test = test_years * 12
 
-    # Dividir los datos
+    # si la serie es demasiado corta ajusta meses_test
+    total = len(serie)
+    if total - meses_test < min_train_obs:
+        # deja al menos 'min_train_obs' para train,
+        # o, si la serie es muy corta, asigna 20% a test
+        meses_test = max(total - min_train_obs,
+                         int(total * 0.2))
+        meses_test = max(meses_test, 0)
+
+    fecha_corte = serie.index[-meses_test] if meses_test > 0 else serie.index[0]
+
     train = serie[serie.index <= fecha_corte]
     test = serie[serie.index > fecha_corte]
 
     return train, test, fecha_corte
+
 
 def evaluar_modelo(y_true, y_pred, nombre_modelo):
     """
@@ -938,6 +954,34 @@ for nombre_serie, serie in series_analizar.items():
     print(f"\n{'='*60}")
     print(f"PREDICCIONES 2025: {nombre_serie}")
     print(f"{'='*60}")
+
+    if nombre_serie == 'Precios Gasolina Regular':
+        print("🔹 Saltando predicción últimos 3 años (serie <36 meses)")
+        train = serie  # 7 puntos
+        n_pasados = len(train)
+        n_restantes = 12 - n_pasados
+        fechas_prueba = pd.date_range(
+            start=train.index.max() + pd.DateOffset(months=1),
+            periods=n_restantes,
+            freq='MS'
+        )
+        try:
+            modelo = auto_arima(
+                train,
+                seasonal=False,   
+                suppress_warnings=True,
+                stepwise=True
+            )
+        except Exception as e:
+            print("   ⚠️ auto_arima incluso sin estacionalidad falló:", e)
+            continue
+    
+        pred = modelo.predict(n_periods=n_restantes)
+        print("Predicción resto de 2025:")
+        for f, v in zip(fechas_prueba, pred):
+            print(f"  {f.strftime('%Y-%m')}: {v:.2f}")
+        continue
+
 
     # Usar toda la serie para entrenar
     try:
