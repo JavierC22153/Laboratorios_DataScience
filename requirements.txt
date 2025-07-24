@@ -8,4 +8,4 @@ pmdarima==2.0.4
 statsmodels==0.14.1
 prophet==1.1.5
 openpyxl
-
+tensorflow
