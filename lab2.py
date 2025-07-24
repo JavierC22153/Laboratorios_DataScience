@@ -234,13 +234,13 @@ for nombre_serie, serie in series_analizar.items():
     print(f"   Prueba: {test.index.min().strftime('%Y-%m')} a {test.index.max().strftime('%Y-%m')} ({len(test)} obs)")
     
     if len(test) == 0 or len(train) < 30:
-        print("⚠️  No hay suficientes datos para LSTM")
+        print("No hay suficientes datos para LSTM")
         continue
     
     resultados_serie = {}
     
     for config_name, config in configuraciones_lstm.items():
-        print(f"\n🔧 Probando configuración: {config_name}")
+        print(f"\nProbando configuración: {config_name}")
         print(f"   Parámetros: steps={config['n_steps']}, units={config['lstm_units']}, layers={config['layers']}")
         
         try:
@@ -252,9 +252,9 @@ for nombre_serie, serie in series_analizar.items():
                     'config': config
                 }
             else:
-                print(f"   ❌ Falló la configuración {config_name}")
+                print(f"Falló la configuración {config_name}")
         except Exception as e:
-            print(f"   ❌ Error en {config_name}: {str(e)}")
+            print(f"Error en {config_name}: {str(e)}")
     
     resultados_lstm[nombre_serie] = {
         'train': train,
@@ -301,7 +301,7 @@ for nombre_serie, serie in series_analizar.items():
         plt.savefig(f"imagenes/lstm_resultados_{nombre_serie.replace(' ', '_')}.png", dpi=300, bbox_inches='tight')
         plt.show()
         
-        print(f"\n📊 RESUMEN DE RESULTADOS - {nombre_serie}")
+        print(f"\nRESUMEN DE RESULTADOS - {nombre_serie}")
         print("-" * 50)
         metricas_comparacion = []
         for config_name, datos in resultados_serie.items():
@@ -318,15 +318,13 @@ for nombre_serie, serie in series_analizar.items():
         print(df_metricas.to_string(index=False, float_format='%.3f'))
         
         mejor_config = df_metricas.iloc[0]['Configuración']
-        print(f"\n🏆 Mejor configuración: {mejor_config}")
+        print(f"\nMejor configuración: {mejor_config}")
 
-print(f"\n{'='*80}")
 print("RESUMEN FINAL DE TODOS LOS MODELOS LSTM")
-print(f"{'='*80}")
 
 for nombre_serie, datos in resultados_lstm.items():
     if 'modelos' in datos and datos['modelos']:
-        print(f"\n📈 {nombre_serie}:")
+        print(f"\n{nombre_serie}:")
         print("-" * 40)
         
         mejor_mae = float('inf')
@@ -346,4 +344,4 @@ for nombre_serie, datos in resultados_lstm.items():
                 mejor_mae = metricas['MAE']
                 mejor_modelo = config_name
         
-        print(f"\n   🥇 Mejor modelo: {mejor_modelo} (MAE: {mejor_mae:.3f})")
+        print(f"\nMejor modelo: {mejor_modelo} (MAE: {mejor_mae:.3f})")
