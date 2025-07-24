@@ -24,3 +24,5 @@ docker-compose.override.yml
 
 .DS_Store
 .rstudio
+
+.local/share/rstudio
