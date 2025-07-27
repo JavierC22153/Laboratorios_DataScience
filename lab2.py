@@ -232,23 +232,45 @@ series_analizar = {
 
 # configuraciones lstm adaptadas
 configuraciones_lstm = {
-    'LSTM_Modelo_1': {
-        'n_steps': 1, 
-        'lstm_units': 64,
-        'dropout_rate': 0.2,
-        'learning_rate': 0.001,
-        'layers': 2,
-        'epochs': 300,
-        'batch_size': 2
+    'Importacion_Diesel': {
+        'LSTM_Diesel_1': {
+            'n_steps': 16, 
+            'lstm_units': 128,
+            'dropout_rate': 0.2,
+            'learning_rate': 0.001,
+            'layers': 3,
+            'epochs': 500,
+            'batch_size': 8
+        },
+        'LSTM_Diesel_2': {
+            'n_steps':24, 
+            'lstm_units': 300,
+            'dropout_rate': 0.15,
+            'learning_rate': 0.0007,
+            'layers': 6,
+            'epochs': 350,
+            'batch_size': 6
+        }
     },
-    'LSTM_Modelo_2': {
-        'n_steps': 3, 
-        'lstm_units': 128,
-        'dropout_rate': 0.5,
-        'learning_rate': 0.0005,
-        'layers': 4,
-        'epochs': 450,
-        'batch_size': 3
+    'Consumo_Gasolina_Superior': {
+        'LSTM_Gasolina_1': {
+            'n_steps': 3, 
+            'lstm_units': 128,
+            'dropout_rate': 0.5,
+            'learning_rate': 0.0005,
+            'layers': 4,
+            'epochs': 450,
+            'batch_size': 3
+        },
+        'LSTM_Gasolina_2': {
+            'n_steps': 1, 
+            'lstm_units': 64,
+            'dropout_rate': 0.2,
+            'learning_rate': 0.001,
+            'layers': 2,
+            'epochs': 300,
+            'batch_size': 2
+        }
     }
 }
 
@@ -262,6 +284,7 @@ resultados_lstm = {}
 mejores_modelos = {}
 
 for nombre_serie, serie in series_analizar.items():
+    configs_serie = configuraciones_lstm.get(nombre_serie, {})
     print(f"\nanálisis lstm: {nombre_serie.replace('_', ' ')}")
     
     train, test, fecha_corte = crear_conjuntos_entrenamiento_prueba(serie)
@@ -278,7 +301,7 @@ for nombre_serie, serie in series_analizar.items():
     mejor_mae = float('inf')
     mejor_config_nombre = None
     
-    for config_name, config in configuraciones_lstm.items():
+    for config_name, config in configs_serie.items():
         print(f"\nentrenando: {config_name}")
         print(f"parámetros:")
         print(f"   ventana temporal (n_steps): {config['n_steps']}")
