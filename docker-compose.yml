@@ -1,9 +1,14 @@
-
 services:
-  forecast:
+  tf-jupyter:
     build: .
+    ports:
+      - "8888:8888"
     volumes:
       - .:/app
     working_dir: /app
-    tty: true
-
+    runtime: nvidia
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities: [gpu]

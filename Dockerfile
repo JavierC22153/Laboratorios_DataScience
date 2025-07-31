@@ -1,17 +1,12 @@
-FROM python:3.11-slim-bookworm
-
-ENV PYTHONDONTWRITEBYTECODE=1
-ENV PYTHONUNBUFFERED=1
+FROM tensorflow/tensorflow:2.15.0-gpu-jupyter
 
 WORKDIR /app
 
 COPY requirements.txt .
 
-# Instalar paquetes de Python
-RUN pip install --upgrade pip
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY lab2.py lab2.py
+COPY . .
 
-CMD [ "python", "lab2.py" ]
+CMD ["jupyter", "notebook", "--ip=0.0.0.0", "--port=8888", "--no-browser", "--allow-root"]
 
