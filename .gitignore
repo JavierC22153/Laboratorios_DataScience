@@ -25,6 +25,8 @@ docker-compose.override.yml
 .DS_Store
 .rstudio
 
+data
+
 .local/share/rstudio
 .ipynb_checkpoints/
 
