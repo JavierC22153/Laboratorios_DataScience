@@ -8,3 +8,10 @@ pmdarima>=2.0
 statsmodels>=0.14
 prophet>=1.1
 openpyxl
+openeo==0.15.0
+rasterio==1.3.9
+geopandas==0.14.3
+shapely==2.0.3
+requests>=2.31
+sentinelhub==3.10.1
+

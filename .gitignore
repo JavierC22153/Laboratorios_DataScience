@@ -31,3 +31,5 @@ data
 .ipynb_checkpoints/
 
 data/
+
+.env
