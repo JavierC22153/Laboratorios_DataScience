@@ -29,5 +29,6 @@ docker-compose.override.yml
 .local/share/rstudio
 .ipynb_checkpoints/
 
+imagenes/
 
 .env
