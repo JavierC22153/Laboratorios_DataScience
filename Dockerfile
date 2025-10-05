@@ -1,30 +1,18 @@
-# Fija Debian a bookworm para tener openjdk-17 disponible
-FROM python:3.11-slim-bookworm
+FROM jupyter/pyspark-notebook:latest
+ENV TZ=America/Guatemala
+ENV DEBIAN_FRONTEND=noninteractive
 
-# Instalar Java 17 y utilidades
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-        openjdk-17-jdk-headless ca-certificates curl tini procps && \
-    rm -rf /var/lib/apt/lists/*
+COPY notebooks/requirements.txt /tmp/requirements.txt
+RUN pip install --no-cache-dir -r /tmp/requirements.txt
 
-ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
-ENV PATH="$JAVA_HOME/bin:$PATH"
-ENV PYSPARK_PYTHON=/usr/local/bin/python
+USER root
 
-WORKDIR /opt/app
+RUN mkdir -p /home/gus/work/data /home/gus/work/out \
+    && chmod -R 777 /home/gus
 
-# PySpark + Jupyter (notebook clásico y lab por si lo quieres)
-RUN pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir \
-        pyspark==3.5.1 \
-        notebook \
-        jupyterlab \
-        ipykernel \
-        findspark
-
-# Usuario no root
-RUN useradd -ms /bin/bash spark && chown -R spark:spark /opt/app
-USER spark
+WORKDIR /home/gus/work
 
 EXPOSE 8888
-CMD ["bash"]
+
+CMD ["start-notebook.py", "--NotebookApp.token=''", "--NotebookApp.password=''", "--NotebookApp.allow_origin='*'", "--NotebookApp.ip=0.0.0.0", "--notebook-dir=/home/gus/work"]
+
