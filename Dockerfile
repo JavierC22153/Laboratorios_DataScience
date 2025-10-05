@@ -1,12 +1,30 @@
-FROM tensorflow/tensorflow:2.15.0-gpu-jupyter
+# Fija Debian a bookworm para tener openjdk-17 disponible
+FROM python:3.11-slim-bookworm
 
-WORKDIR /app
+# Instalar Java 17 y utilidades
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        openjdk-17-jdk-headless ca-certificates curl tini procps && \
+    rm -rf /var/lib/apt/lists/*
 
-COPY requirements.txt .
+ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
+ENV PATH="$JAVA_HOME/bin:$PATH"
+ENV PYSPARK_PYTHON=/usr/local/bin/python
 
-RUN pip install --no-cache-dir -r requirements.txt
+WORKDIR /opt/app
 
-COPY . .
+# PySpark + Jupyter (notebook clásico y lab por si lo quieres)
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir \
+        pyspark==3.5.1 \
+        notebook \
+        jupyterlab \
+        ipykernel \
+        findspark
 
-CMD ["jupyter", "notebook", "--ip=0.0.0.0", "--port=8888", "--no-browser", "--allow-root"]
+# Usuario no root
+RUN useradd -ms /bin/bash spark && chown -R spark:spark /opt/app
+USER spark
 
+EXPOSE 8888
+CMD ["bash"]
