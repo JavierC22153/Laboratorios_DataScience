@@ -1,0 +1,1 @@
+{"class":"org.apache.spark.ml.feature.StringIndexerModel","timestamp":1760306460958,"sparkVersion":"3.5.0","uid":"StringIndexer_b359b683372c","paramMap":{"inputCol":"dia_sem_ocu","outputCol":"dia_sem_ocu_idx","handleInvalid":"keep"},"defaultParamMap":{"stringOrderType":"frequencyDesc","outputCol":"StringIndexer_b359b683372c__output","handleInvalid":"error"}}
