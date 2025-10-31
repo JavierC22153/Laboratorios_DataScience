@@ -1,1 +1,0 @@
-{"class":"org.apache.spark.ml.feature.VectorAssembler","timestamp":1760305890728,"sparkVersion":"3.5.0","uid":"VectorAssembler_afd73766df1b","paramMap":{"outputCol":"reg_in","inputCols":["tipo_eve_idx","zona_ocu_idx","hora_cod_imp","num_vehiculos_imp","num_lesionados_imp"]},"defaultParamMap":{"outputCol":"VectorAssembler_afd73766df1b__output","handleInvalid":"error"}}

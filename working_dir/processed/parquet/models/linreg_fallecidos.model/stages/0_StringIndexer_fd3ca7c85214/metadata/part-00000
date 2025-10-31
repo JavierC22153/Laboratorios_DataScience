@@ -1,1 +1,0 @@
-{"class":"org.apache.spark.ml.feature.StringIndexerModel","timestamp":1760305890434,"sparkVersion":"3.5.0","uid":"StringIndexer_fd3ca7c85214","paramMap":{"inputCol":"tipo_eve","handleInvalid":"keep","outputCol":"tipo_eve_idx"},"defaultParamMap":{"handleInvalid":"error","outputCol":"StringIndexer_fd3ca7c85214__output","stringOrderType":"frequencyDesc"}}
